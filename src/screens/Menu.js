@@ -1,44 +1,98 @@
-import React,  { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, BackHandler, Image } from 'react-native';
-import { criarDataSaveSeNaoExistir, obterDataSave, gravarDataSave, atualizarDataSave } from '../myAsyncStorage'
-import { AsyncStorage } from 'react-native'
-import { Perguntas } from '../Perguntas'
+import React, { Component } from 'react';
+import { View, Text, TouchableHighlight, BackHandler, Image, TextInput, Button, ScrollView } from 'react-native';
+import { GetAsyncStorage, SaveAsyncStorage , ResetOrInitAsyncStorage } from '../Storage';
+import { styles } from '../styles';
 
 export default class Menu extends Component {
 
 	constructor(props) {
-		super(props)		
-		this.state = {dataSave: null}
-		this.obterDataSave = obterDataSave.bind(this)
-		this.atualizarDataSave = atualizarDataSave.bind(this)
-		this.gravarDataSave = gravarDataSave.bind(this)
+		super(props)
+		this.state = { dataSave: null, nomeForm: '' }
+		this.GetAsyncStorage = GetAsyncStorage.bind(this)
+		this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
+		this.buttonRegister = this.buttonRegister.bind(this)
 	}
 
 	static navigationOptions = {
 		header: null,
 	};
 
-	componentDidMount() {
-		this.obterDataSave()
-		this.atualizarDataSave()
+	async componentDidMount() {
+		let s = this.state;
+		s.dataSave = await this.GetAsyncStorage();
+		this.setState(s);
+	}
+
+	modeDevStepStage(n) {
+		let s = this.state
+		s.dataSave.score = n
+		s.dataSave.fase = n
+		for (let i = 0; i < n; i++)
+			s.dataSave.perguntas.shift()
+		for (let i = 0; i < (n / 2) - 1; i++)
+			s.dataSave.dialogos.shift()
+		this.setState(s);
+		this.asSave();
+	}
+
+	async buttonRegister() {
+		let s = this.state
+		if (this.state.nomeForm == "") return alert("Você precisa digitar um nome!");
+		if (this.state.nomeForm.split(" ").length < 2 || this.state.nomeForm[this.state.nomeForm.length - 1] == " ") 
+			return alert("Você digitou apenas o primeiro nome.")
+		s.dataSave.nome = this.state.nomeForm;
+		this.setState(s);
+		await this.gravarDataSave();
 	}
 
 	reset() {
-		alert("As configurações padrões foram definidas.")
-		if(this.state.dataSave === null) return false
-		let s = this.state
-		s.dataSave.fase = 0
-		s.dataSave.score = 0
-		s.dataSave.perguntas = Perguntas
-		this.gravarDataSave()
-		return true
+		alert("Todas as configurações foram reiniciadas")
+		// if (this.state.dataSave === null) return false
+		// let s = this.state
+		// s.nomeForm = ""
+		// s.dataSave = dataSaveDefault
+		// this.setState(s);
+		// this.gravarDataSave()
+		// // this.modeDevStepStage(15)
+		ResetOrInitAsyncStorage();
 	}
 
 	render() {
-		if(this.state.dataSave === null) 
-			return (<View><Text>Carregando...</Text></View>)
+
+		if (this.state.dataSave === null) {
+			return (
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<Text style={styles.texto}>Carregando...</Text>
+				</View>
+			)
+		}
+
+		// setTimeout(()=>console.warn(this.state.dataSave.dialogos), 5000)
+		if (this.state.dataSave.nome === "Convidado") {
+			return (
+				<View style={styles.formData}>
+
+					<Text style={{ fontSize: 20, width: '70%', textAlign: 'center', lineHeight: 30 }}>
+						Olá!
+					</Text>
+					<Text style={{ fontSize: 20, width: '70%', textAlign: 'center', lineHeight: 30, marginBottom: 50 }}>
+						Primeiro precisamos registrar você.
+						Está informação é importante visto que ela é sua identificação na hora de aplicar a nota.
+					</Text>
+					<TextInput
+						style={styles.textInput}
+						placeholder="Digite seu nome completo"
+						autoCapitalize="words"
+						onChangeText={(nomeForm) => this.setState({ nomeForm })}
+						value={this.state.nomeForm}
+					></TextInput>
+					<Button title="Registrar" onPress={this.buttonRegister}></Button>
+				</View>
+			)
+		}
+
 		return (
-			<View style={{flex:1}}>
+			<View style={[styles.window]}>
 				<Image source={require('../../images/galaxia.png')} style={styles.backgroundImage} />
 				<View style={styles.imagesInBackground}>
 					<View>
@@ -48,75 +102,29 @@ export default class Menu extends Component {
 						<Image source={require('../../images/world.png')} style={styles.world} />
 					</View>
 				</View>
-				<View style={styles.menu}>
-					<TouchableHighlight onPress={()=>this.props.navigation.navigate('Explicacao')}>
-				      <Image style={styles.button} source={require('../../images/button_play.png')}/>
-				    </TouchableHighlight>
-					<TouchableHighlight onPress={()=>BackHandler.exitApp()}>
-				      <Image style={styles.button} source={require('../../images/button_exit.png')}/>
-				    </TouchableHighlight>
-					<TouchableHighlight onPress={()=>this.reset()}>
-				      <Image style={styles.button} source={require('../../images/button_reset.png')}/>
-				    </TouchableHighlight>
-				</View>
-				<Text style={{
-					color: 'white',
-					fontSize: 23,
-					textAlign: 'center',
-					marginBottom: 50,
-				}}>
-					Sua pontuação: {(this.state.dataSave !== null) ? this.state.dataSave.score : 0}
-				</Text>
+				<ScrollView>
+					<View style={styles.menu}>
+						<Text style={{ color: 'white', fontSize: 25, color: 'black', marginBottom: 20 }}>Bem-vindo {this.state.dataSave.nome.substr(0, this.state.dataSave.nome.indexOf(' '))}</Text>
+						<TouchableHighlight onPress={() => this.props.navigation.navigate('Explicacao')}>
+							<Image style={styles.button} source={require('../../images/button_play.png')} />
+						</TouchableHighlight>
+						<TouchableHighlight onPress={() => BackHandler.exitApp()}>
+							<Image style={styles.button} source={require('../../images/button_exit.png')} />
+						</TouchableHighlight>
+						<TouchableHighlight onPress={() => this.reset()}>
+							<Image style={styles.button} source={require('../../images/button_reset.png')} />
+						</TouchableHighlight>
+						<Text style={{
+							color: 'black',
+							fontSize: 23,
+							textAlign: 'center',
+						}}>
+							Sua pontuação: {(this.state.dataSave !== null) ? this.state.dataSave.score : 0}
+						</Text>
+					</View>
+				</ScrollView>
 			</View>
 		);
 	}
 
 }
-
-
-
-const styles = StyleSheet.create({
-	backgroundImage: {
-		position: 'absolute',
-		width: '100%',
-		height: '100%',
-		zIndex: -10,
-	},
-	imagesInBackground: {
-		flex:1,
-		flexDirection: 'row',
-		justifyContent:
-		'space-between'
-	},
-	lua: {
-		width: 50,
-		height: 100,
-		marginLeft: 50,
-		marginTop: 10,
-	},
-	world: {
-		width: 100,
-		height: 100,
-		marginRight: 50,
-		marginTop: 50,
-	},
-	menu: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	button: {
-		width: 200,
-		height: 50,
-		marginBottom: 10,
-	},
-	scores: {
-		flex: 1,
-		zIndex: 10,
-		color: 'white',
-		fontSize: 25,
-		alignItems: 'flex-end',
-		justifyContent: 'flex-end',
-	},
-
-});

@@ -1,18 +1,10 @@
-import React,  { Component } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, PixelRatio } from 'react-native';
 
-var pixelRatio = PixelRatio.get()
+var pixelRatio = PixelRatio.getFontScale()
 
-if (pixelRatio === 1)
-	var TEXTFONT = 15
-else if (pixelRatio === 1.5) 
-	var TEXTFONT = 17
-else if (pixelRatio === 2)
-	var TEXTFONT = 19
-else if (pixelRatio === 3)
+if (pixelRatio < 2)
 	var TEXTFONT = 20
-else 
-	var TEXTFONT = 21
 
 export const styles = StyleSheet.create({
 	backgroundImage: {
@@ -22,10 +14,9 @@ export const styles = StyleSheet.create({
 		zIndex: -10,
 	},
 	imagesInBackground: {
-		flex:1,
+		flex: 1,
 		flexDirection: 'row',
-		justifyContent:
-		'space-between'
+		justifyContent: 'space-between'
 	},
 	lua: {
 		width: 50,
@@ -41,8 +32,20 @@ export const styles = StyleSheet.create({
 	},
 	menu: {
 		flex: 1,
+		alignSelf: 'center',
+		alignItems: 'center',
+		alignContent: 'center',
+		height: 'auto',
+		padding: 20,
+		backgroundColor: 'rgba(255,255,255,0.8)',
+		width: '90%',
+	},
+	fim: {
+		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
+		alignSelf: 'center',
+		width: '90%',
 	},
 	button: {
 		width: 200,
@@ -58,24 +61,32 @@ export const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 	},
 	flechas: {
-		flex:1,
+		flex: 1,
 		flexDirection: 'column',
-		alignItems: 'flex-end',
-		marginTop: 20,
+		alignItems: 'center',
+		marginTop: -150,
+		marginBottom: 50,
 	},
 	flecha: {
-		flex:1,
-		flexGrow:1,
+		flex: 1,
+		flexGrow: 1,
+		backgroundColor: '#10ac84',
+		borderRadius: 100,
+		width: 50,
+		padding: 30,
+		marginRight: 20,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	robo: {
-		flex:6,
+		flex: 6,
+		marginTop: 40,
 		justifyContent: 'flex-start',
-		alignItems: 'center',
+		alignItems: 'flex-end',
 	},
 	boxTalk: {
 		flex: 4,
-		paddingLeft: 10,
-		paddingRight: 10,
+		padding: 20,
 		marginTop: 20,
 		marginLeft: 10,
 		marginRight: 10,
@@ -83,33 +94,59 @@ export const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: 'white',
-		width: '90%'
+		width: '90%',
+		borderRadius: 5
+	},
+	window: {
+		flex: 1,
+		flexDirection: 'column',
+		overflow: 'scroll',
+	},
+	windowBackgroundImage: {
+		position: 'absolute', 
+		top: 0, 
+		left: 0, 
+		width: '100%', 
+		height: '100%'
 	},
 	areaPerguntas: {
-		flex:1,
+		flex: 1,
 		flexDirection: 'column',
 		alignItems: 'center',
-		justifyContent: 'space-around',
-		backgroundColor: 'rgba(10,10,10,.5)',
-		paddingTop: 30,
+		alignContent: 'flex-start',
+		justifyContent: 'flex-start',
+		paddingBottom: 20,
+	},
+	textoPergunta: {
+		flex: 1,
+		width: '90%',
+		fontSize: TEXTFONT,
+		color: 'white',
+		textAlign: 'center',
+		marginLeft: 10,
+		marginBottom: 50,
+		textShadowColor: 'rgb(0, 0, 0)',
+		textShadowOffset: { width: -1, height: 1 },
+		textShadowRadius: 10,
 	},
 	alternatives: {
 		flex: 1,
 		flexDirection: 'column',
 		width: '90%',
 		marginRight: 20,
+		marginBottom: 20,
 	},
 	modal: {
 		flex: 1,
 		flexDirection: 'column',
 	},
 	modalHeader: {
-		flex:1,
+		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'space-around',
 	},
 	modalFooter: {
-		flex:1,
+		flex: 1,
 		justifyContent: 'flex-end',
 		alignSelf: 'center',
 	},
@@ -117,17 +154,6 @@ export const styles = StyleSheet.create({
 		fontSize: TEXTFONT,
 		color: 'black',
 		textAlign: 'center',
-	},
-	textoPergunta: {
-		flex:1,
-		width: '90%',
-		fontSize: TEXTFONT,
-		color: 'white',
-		textAlign: 'center',
-		marginLeft: 10,
-		textShadowColor: 'rgb(0, 0, 0)',
-		textShadowOffset: {width: -1, height: 1},
-		textShadowRadius: 10,
 	},
 	circle: {
 		borderWidth: 2,
@@ -140,10 +166,27 @@ export const styles = StyleSheet.create({
 	fontComic: {
 		marginLeft: 20,
 		marginRight: 20,
-		color: 'white',
+		color: '#ddd',
 		fontSize: TEXTFONT,
 		textShadowColor: 'rgb(0, 0, 0)',
-		textShadowOffset: {width: 1, height: 3},
-		textShadowRadius: 1,
+		textShadowOffset: { width: 2, height: 3 },
+		textShadowRadius: 3,
+	},
+
+
+	formData: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	textInput: {
+		fontSize: TEXTFONT,
+		height: 80,
+		width: '90%',
+		borderRadius: 4,
+		borderWidth: 1,
+		borderColor: '#ccc',
+		textAlign: 'center',
+		marginBottom: 20,
 	},
 });

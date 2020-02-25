@@ -1,203 +1,224 @@
-import React,  { Component } from 'react'
-import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, ScrollView } from 'react-native'
-import { styles } from '../styles.js'
-import { Perguntas } from '../Perguntas'
-import { 
-	obterDataSave,
-	gravarDataSave,
-	atualizarDataSave,
-	criarDataSaveSeNaoExistir
-} from '../myAsyncStorage';
+import React, { Component } from 'react';
+import { View, Text, TouchableHighlight, Modal, Image, ScrollView } from 'react-native';
+import { styles } from '../styles.js';
+import { Perguntas } from '../Perguntas';
+import {
+    obterDataSave,
+    gravarDataSave,
+    atualizarDataSave,
+} from '../Storage';
 
 export default class Jogo extends Component {
 
-	constructor(props) {
-		super(props)
-		this.state = {
-			modalVisivel: false,
-			referenciaSeErrouOuAcertouOModal: false,
-			dataSave: null,
-		}
-		this.abrirModal = this.abrirModal.bind(this)
-		this.fechaModal = this.fechaModal.bind(this)
-		this.gravarDataSave = gravarDataSave.bind(this)
-		this.obterDataSave = obterDataSave.bind(this)
-		this.gravarDataSave = gravarDataSave.bind(this)
-		this.atualizarDataSave = atualizarDataSave.bind(this)
-	}
+    constructor(props) {
+        super(props)
+        this.state = {
+            modalVisivel: false,
+            referenciaSeErrouOuAcertouOModal: false,
+            dataSave: null,
+        }
+        this.abrirModal = this.abrirModal.bind(this)
+        this.fechaModal = this.fechaModal.bind(this)
+        this.gravarDataSave = gravarDataSave.bind(this)
+        this.obterDataSave = obterDataSave.bind(this)
+        this.gravarDataSave = gravarDataSave.bind(this)
+        this.atualizarDataSave = atualizarDataSave.bind(this)
+    }
 
-	static navigationOptions = {
-		header: null,
-	};
-	
-	componentDidMount() {
-		this.obterDataSave()
-	}
+    static navigationOptions = {
+        header: null,
+    };
 
-	processarResposta(letra) {
-		if(!this.acertou(letra)) this.errou()
-	}
+    componentDidMount() {
+        this.obterDataSave()
+    }
 
-	acertou(letra) {
-		let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
-		let acertou = this.compararResposta(letra)
-		this.atualizaReferenciaDoModal(acertou)
-		if(!acertou) return false
-		this.abrirModal()
-		setTimeout(()=>this.fechaModal(), 3000)
-		this.seAcabouPerguntasRedirecionaParaCreditos(this.acabouPerguntas())
-		if(!voltarParaExplicacao) {
-			this.aumentaPontuacao()
-			this.removerPerguntaDaLista()
-			this.gravarDataSave()
-			return acertou
-		}
-		this.aumentaPontuacao()
-		this.proximaFase()
-		this.removerPerguntaDaLista()
-		this.gravarDataSave()
-		setTimeout(()=>this.props.navigation.goBack(null), 3000)
-		return acertou
-	}
+    processarResposta(letra) {
+        // if(!this.acertou(letra)) this.errou()
+        this.acertou(letra) || this.errou()
+    }
 
-	errou() {
-		let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
-		this.abrirModal()
-		setTimeout(()=>this.fechaModal(), 3000)
-		if(!voltarParaExplicacao) {
-			this.moverPerguntaParaFinalDaLista()
-			return true
-		}
-		this.moverPerguntaParaFinalDaLista()
-		this.proximaFase() 
-		this.gravarDataSave()
-		setTimeout(()=>this.props.navigation.goBack(null), 3000)
-	}
+    // adicionaPerguntaAcertadaAEstatistica() {
+    // 	let s = this.state
+    // 	s.dataSave.estatisticas.nacertos++;
+    // 	s.dataSave.estatisticas.questoesqueacertou.push(this.state.dataSave.perguntas[0])
+    // 	this.setState(s)
+    // }
 
-	atualizaReferenciaDoModal(acertou) {
-		let s = this.state
-		s.referenciaSeErrouOuAcertouOModal = acertou
-		this.setState(s)
-	}
+    adicionaPerguntaErradaAEstatistica() {
+        let s = this.state
+        s.dataSave.estatisticas.nerros++;
+        s.dataSave.estatisticas.questoesqueerrou.push(this.state.dataSave.perguntas[0])
+        this.setState(s)
+    }
 
-	compararResposta(letra) {
-		return (letra === this.state.dataSave.perguntas[0].letraRespostaCorreta)
-	}
+    acertou(letra) {
+        let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
+        let acertou = this.compararResposta(letra)
 
-	proximaFase() {
-		let s = this.state
-		++s.dataSave.fase
-		this.setState(s)
-	}
+        // this.adicionaPerguntaAcertadaAEstatistica()
 
-	aumentaPontuacao(quantidadeASerIncrementada = 1) {
-		let s = this.state
-		s.dataSave.score = s.dataSave.score + quantidadeASerIncrementada
-		this.setState(s)
-	}
+        this.atualizaReferenciaDoModal(acertou)
+        if (!acertou) {
+            return false
+        }
+        this.abrirModal()
+        setTimeout(() => this.fechaModal(), 3000)
+        this.seAcabouPerguntasRedirecionaParaCreditos(this.acabouPerguntas())
+        if (!voltarParaExplicacao) {
+            this.aumentaPontuacao()
+            this.removerPerguntaDaLista()
+            this.gravarDataSave()
+            return acertou
+        }
+        this.aumentaPontuacao()
+        this.proximaFase()
+        this.removerPerguntaDaLista()
+        this.gravarDataSave()
+        setTimeout(() => this.props.navigation.goBack(null), 3000)
+        return acertou
+    }
 
-	abrirModal() {
-		let s = this.state
-		s.modalVisivel = true
-		this.setState(s)
-	}
+    errou() {
+        let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
 
-  fechaModal() {
-		let s = this.state
-		s.modalVisivel = false
-		this.setState(s)
-	}
+        this.adicionaPerguntaErradaAEstatistica()
 
-	moverPerguntaParaFinalDaLista() {
-		let s = this.state
-		s.dataSave.perguntas[0].voltarParaExplicacao = false
-		s.dataSave.perguntas.push(s.dataSave.perguntas.shift())
-		this.setState(s)
-	}
+        this.abrirModal()
+        setTimeout(() => this.fechaModal(), 3000)
+        if (!voltarParaExplicacao) {
+            this.moverPerguntaParaFinalDaLista()
+            return true
+        }
+        this.moverPerguntaParaFinalDaLista()
+        this.proximaFase()
+        this.gravarDataSave()
+        setTimeout(() => this.props.navigation.goBack(null), 3000)
+    }
 
-	acabouPerguntas() {
-		return (this.state.dataSave.perguntas.length - 1 === 0)
-	}
+    atualizaReferenciaDoModal(acertou) {
+        let s = this.state
+        s.referenciaSeErrouOuAcertouOModal = acertou
+        this.setState(s)
+    }
 
-	removerPerguntaDaLista() {
-		let s = this.state
-		if(!this.acabouPerguntas()) {
-			s.dataSave.perguntas.shift()
-		}
-		this.setState(s)
-	}
+    compararResposta(letra) {
+        return (letra === this.state.dataSave.perguntas[0].letraRespostaCorreta)
+    }
 
-	seAcabouPerguntasRedirecionaParaCreditos() {
-		if(!(!(this.state.dataSave.perguntas.length-1))) return
-		this.props.navigation.navigate('Fim')
-	}
+    proximaFase() {
+        let s = this.state
+        if (s.dataSave.dialogos.length - 1 == 0)
+            return false
+        s.dataSave.dialogos.shift();
+        ++s.dataSave.fase
+        this.setState(s)
+    }
 
-	renderModal() {
+    aumentaPontuacao(quantidadeASerIncrementada = 1) {
+        let s = this.state
+        s.dataSave.score = s.dataSave.score + quantidadeASerIncrementada
+        this.setState(s)
+    }
 
-		const imagemErrou = '../../images/errou.png'
-		const imagemAcertou = '../../images/acertou.png'
-		const imagemResposta = (this.state.referenciaSeErrouOuAcertouOModal) ? require(imagemAcertou) : require(imagemErrou)
+    abrirModal() {
+        let s = this.state
+        s.modalVisivel = true
+        this.setState(s)
+    }
 
-		return (
-			<Modal animationType="slide" transparent={false} visible={this.state.modalVisivel} onRequestClose={()=>{}}>
-				<View style={styles.modal}>
-					<Image source={imagemResposta} style={{width:'100%', height:'100%'}} />
-				</View>
-			</Modal>
-		)
+    fechaModal() {
+        let s = this.state
+        s.modalVisivel = false
+        this.setState(s)
+    }
 
-	}
+    moverPerguntaParaFinalDaLista() {
+        let s = this.state
+        s.dataSave.perguntas[0].voltarParaExplicacao = false
+        s.dataSave.perguntas.push(s.dataSave.perguntas.shift())
+        this.setState(s)
+    }
 
-	renderAlternativas() {
-		return this.state.dataSave.perguntas[0].alternativas.map((alternativa, index)=>{
-			return (
-				<TouchableHighlight key={index} onPress={()=>this.processarResposta(letras[index])}	style={styles.alternatives}>
-					<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-						<View style={styles.circle}>
-							<Text style={styles.fontComic, {fontSize: 20, textAlign: 'center', lineHeight: 46}}>
-								{letras[index]}
-							</Text>
-						</View>
-						<Text style={styles.fontComic}>
-							{alternativa}
-						</Text>
-					</View>
-				</TouchableHighlight>
-			)
-		})
-	}
+    acabouPerguntas() {
+        return (this.state.dataSave.perguntas.length - 1 === 0)
+    }
 
-	renderPergunta() {
-		return (
-			<Text style={styles.textoPergunta}>
-				{this.state.dataSave.perguntas[0].pergunta}
-			</Text>
-		)
-	}
+    removerPerguntaDaLista() {
+        if (this.acabouPerguntas())
+            return false
 
-	renderImage() {
-		return (<Image source={this.state.dataSave.perguntas[0].imagem} style={{position: 'absolute', top: 0, left: 0, width:'100%', height:'100%'}} />)
-	}
+        let s = this.state
+        s.dataSave.perguntas.shift()
+        this.setState(s)
+        return true
+    }
 
-	render() {
-		if(this.state.dataSave === null) {
-			return (
-				<View>
-					<Text>Carregando...</Text>
-				</View>
-			)
-		}
-		return (
-			<View style={{flex:1, flexDirection: 'row'}}>
-					{this.renderImage()}
-					<View style={styles.areaPerguntas}>
-						{this.renderPergunta()}
-						{this.renderAlternativas()}
-					</View>
-					{this.renderModal()}
-			</View>
-		)
-	}
+
+    seAcabouPerguntasRedirecionaParaCreditos = () => {
+        if (this.state.dataSave.perguntas.length - 1 == 0) 
+            this.props.navigation.navigate('Fim')
+    }
+
+
+    renderModal = () => {
+        const imagemErrou = '../../images/errou.png'
+        const imagemAcertou = '../../images/acertou.png'
+        const imagemResposta = (this.state.referenciaSeErrouOuAcertouOModal) ? require(imagemAcertou) : require(imagemErrou)
+        
+        return (
+            <Modal animationType="slide" transparent={false} visible={this.state.modalVisivel}>
+                <View style = { styles.modal } >
+                    <Image source = { imagemResposta } style = {{ width: '100%', height: '100%' }}/> 
+                </View> 
+            </Modal>
+        );
+    }
+
+    render() {
+        if (this.state.dataSave === null) {
+            return ( 
+                <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={styles.texto}>Carregando...</Text> 
+                </View>
+            )
+        }
+        return ( 
+            <View style={styles.window}> 
+                <Image source={this.state.dataSave.perguntas[0].imagem} style={styles.windowBackgroundImage}/>
+                <View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'rgba(0,0,0,.4)' }}>
+                    <ScrollView>
+                        <View style={styles.areaPerguntas}> 
+                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}> 
+                                    { Perguntas.length - this.state.dataSave.perguntas.length } de { Perguntas.length } perguntas 
+                                </Text> 
+                            </View>
+                            <Text style={styles.textoPergunta}> 
+                                { this.state.dataSave.perguntas[0].id }) 
+                                { this.state.dataSave.perguntas[0].pergunta } 
+                            </Text>
+                            {this.state.dataSave.perguntas[0].alternativas.map((alternativa, index) => (
+                                <TouchableHighlight key={index} onPress={() => this.processarResposta(letras[index])} style={styles.alternatives}>
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                                        <View style={styles.circle}>
+                                            <Text style={ styles.fontComic, { fontSize: 20, textAlign: 'center', lineHeight: 46 }}>
+                                                {letras[index]}
+                                            </Text> 
+                                        </View> 
+                                        <Text style={styles.fontComic}> 
+                                            { alternativa } 
+                                        </Text> 
+                                    </View> 
+                                </TouchableHighlight>
+                            ))}
+                        </View> 
+                    </ScrollView> 
+                </View>
+        {this.renderModal()} 
+            </View>
+        )
+    }
 
 }
 
