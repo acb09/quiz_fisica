@@ -9,7 +9,7 @@ export default class Explicacao extends Component {
         this.state = {
             dialogos: '...',
             indiceDialogos: 0,
-            dataSave: null,
+            dataSave: this.props.navigation.state.params,
         }
         this.irParaPerguntas = this.irParaPerguntas.bind(this)
         setInterval(() => this.obterTodosDialogos(), 1000)
@@ -18,9 +18,6 @@ export default class Explicacao extends Component {
     static navigationOptions = {
         header: null,
     };
-
-    componentDidMount() {
-    }
 
     obterTodosDialogos() {
         if (this.state.dataSave === null) {
@@ -32,7 +29,6 @@ export default class Explicacao extends Component {
             concatenacaoDeDialogos += this.state.dataSave.dialogos[0][i] + "\n"
             this.setState(s)
         }
-        // console.warn(concatenacaoDeDialogos)
         s.dialogos = concatenacaoDeDialogos
         this.setState(s)
         this.reiniciarDialogoAtual()
@@ -54,18 +50,18 @@ export default class Explicacao extends Component {
     // }
 
     reiniciarDialogoAtual() {
-        let s = this.state
-        s.indiceDialogos = 0
-        this.setState(s)
+        let s = this.state;
+        s.indiceDialogos = 0;
+        this.setState(s);
     }
 
     dialogoAcabou() {
-        return (!this.state.dataSave.dialogos[0][0].length)
+        return (!this.state.dataSave.dialogos[0][0].length);
     }
 
     irParaPerguntas() {
-        this.scrollListReftop.scrollTo({ x: 0, y: 0, animated: false })
-        this.props.navigation.navigate('Jogo')
+        this.scrollListReftop.scrollTo({ x: 0, y: 0, animated: false });
+        this.props.navigation.navigate('Jogo', this.state.dataSave);
     }
 
     render() {
@@ -77,7 +73,7 @@ export default class Explicacao extends Component {
             )
         }
 
-        if (this.state.dataSave.nome === "Convidado") {
+        if ( ! this.state.dataSave.nome ) {
             return (
                 <View style={styles.formData} >
                     <Text style={{ fontSize: 20, width: '70%', textAlign: 'center', lineHeight: 30 }} >Olá!</Text>

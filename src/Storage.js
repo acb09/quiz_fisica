@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { Perguntas } from "./Perguntas";
-import { Dialogos } from "./Dialogos";
+import Perguntas from "./Perguntas";
+import Dialogos from "./Dialogos";
 
 const initialState = {
   fase: 0,
@@ -8,7 +8,7 @@ const initialState = {
   perguntas: Perguntas,
   dialogos: Dialogos,
   dialogoAtual: "",
-  nome: "Convidado",
+  nome: null,
   relatorioEnviado: false,
   estatisticas: {
     nerros: 0,
@@ -18,11 +18,11 @@ const initialState = {
 };
 
 // Reinicia ao padrão de fábrica
-const ResetOrInitAsyncStorage = () => this.SaveAsyncStorage(initialState);
+const ResetOrInitAsyncStorage = () => SaveAsyncStorage(initialState);
 
 // Save os dados recebidos por parâmetros via AsyncStorage
-const SaveAsyncStorage = async data =>
-  await AsyncStorage.setItem("dataSave", JSON.stringify(data));
+const SaveAsyncStorage = async data => {
+  await AsyncStorage.setItem("dataSave", JSON.stringify(data))};
 
 // Retorna os dados salvos em JSON
 const GetAsyncStorage = async () => {

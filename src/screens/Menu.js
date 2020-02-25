@@ -7,7 +7,7 @@ export default class Menu extends Component {
 
 	constructor(props) {
 		super(props)
-		this.state = { dataSave: null, nomeForm: '' }
+		this.state = { dataSave: null, nomeForm: null }
 		this.GetAsyncStorage = GetAsyncStorage.bind(this)
 		this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
 		this.buttonRegister = this.buttonRegister.bind(this)
@@ -17,22 +17,10 @@ export default class Menu extends Component {
 		header: null,
 	};
 
-	async componentDidMount() {
+	async componentWillMount() {
 		let s = this.state;
-		s.dataSave = await this.GetAsyncStorage();
-		this.setState(s);
-	}
-
-	modeDevStepStage(n) {
-		let s = this.state
-		s.dataSave.score = n
-		s.dataSave.fase = n
-		for (let i = 0; i < n; i++)
-			s.dataSave.perguntas.shift()
-		for (let i = 0; i < (n / 2) - 1; i++)
-			s.dataSave.dialogos.shift()
-		this.setState(s);
-		this.asSave();
+		s.dataSave = this.props.navigation.state.params || await this.GetAsyncStorage();
+		this.setState(s);		
 	}
 
 	async buttonRegister() {
@@ -42,33 +30,28 @@ export default class Menu extends Component {
 			return alert("Você digitou apenas o primeiro nome.")
 		s.dataSave.nome = this.state.nomeForm;
 		this.setState(s);
-		await this.gravarDataSave();
+		await SaveAsyncStorage(s.dataSave);
 	}
 
-	reset() {
+	async reset() {
 		alert("Todas as configurações foram reiniciadas")
-		// if (this.state.dataSave === null) return false
-		// let s = this.state
-		// s.nomeForm = ""
-		// s.dataSave = dataSaveDefault
-		// this.setState(s);
-		// this.gravarDataSave()
-		// // this.modeDevStepStage(15)
 		ResetOrInitAsyncStorage();
+		let s = this.state;
+		s.nomeForm = null;
+		s.dataSave = await this.GetAsyncStorage();
+		this.setState(s);
 	}
 
 	render() {
-
-		if (this.state.dataSave === null) {
+		
+		if (this.state.dataSave == null) {
 			return (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<Text style={styles.texto}>Carregando...</Text>
 				</View>
 			)
 		}
-
-		// setTimeout(()=>console.warn(this.state.dataSave.dialogos), 5000)
-		if (this.state.dataSave.nome === "Convidado") {
+		if (this.state.dataSave.nome == null) {
 			return (
 				<View style={styles.formData}>
 
@@ -104,8 +87,10 @@ export default class Menu extends Component {
 				</View>
 				<ScrollView>
 					<View style={styles.menu}>
-						<Text style={{ color: 'white', fontSize: 25, color: 'black', marginBottom: 20 }}>Bem-vindo {this.state.dataSave.nome.substr(0, this.state.dataSave.nome.indexOf(' '))}</Text>
-						<TouchableHighlight onPress={() => this.props.navigation.navigate('Explicacao')}>
+						<Text style={{ color: 'white', fontSize: 25, color: 'black', marginBottom: 20 }}>
+							Bem-vindo {this.state.dataSave.nome.substr(0, this.state.dataSave.nome.indexOf(' '))}
+						</Text>
+						<TouchableHighlight onPress={() => this.props.navigation.navigate('Explicacao', this.state.dataSave)}>
 							<Image style={styles.button} source={require('../../images/button_play.png')} />
 						</TouchableHighlight>
 						<TouchableHighlight onPress={() => BackHandler.exitApp()}>

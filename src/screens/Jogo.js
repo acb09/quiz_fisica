@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, Modal, Image, ScrollView } from 'react-native';
 import { styles } from '../styles.js';
-import { Perguntas } from '../Perguntas';
-import {
-    obterDataSave,
-    gravarDataSave,
-    atualizarDataSave,
-} from '../Storage';
+import Perguntas from '../Perguntas';
+import { GetAsyncStorage, SaveAsyncStorage , ResetOrInitAsyncStorage } from '../Storage';
 
 export default class Jogo extends Component {
 
@@ -15,35 +11,29 @@ export default class Jogo extends Component {
         this.state = {
             modalVisivel: false,
             referenciaSeErrouOuAcertouOModal: false,
-            dataSave: null,
+            dataSave: this.props.navigation.state.params,
         }
         this.abrirModal = this.abrirModal.bind(this)
         this.fechaModal = this.fechaModal.bind(this)
-        this.gravarDataSave = gravarDataSave.bind(this)
-        this.obterDataSave = obterDataSave.bind(this)
-        this.gravarDataSave = gravarDataSave.bind(this)
-        this.atualizarDataSave = atualizarDataSave.bind(this)
+        this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
+        this.GetAsyncStorage = GetAsyncStorage.bind(this)
     }
 
     static navigationOptions = {
         header: null,
     };
 
-    componentDidMount() {
-        this.obterDataSave()
-    }
-
-    processarResposta(letra) {
-        // if(!this.acertou(letra)) this.errou()
-        this.acertou(letra) || this.errou()
-    }
-
-    // adicionaPerguntaAcertadaAEstatistica() {
-    // 	let s = this.state
-    // 	s.dataSave.estatisticas.nacertos++;
-    // 	s.dataSave.estatisticas.questoesqueacertou.push(this.state.dataSave.perguntas[0])
-    // 	this.setState(s)
+    // processarResposta(letra) {
+    //     this.acertou(letra) || this.errou()
     // }
+
+    async processarResposta(letra) {
+        if (this.compararResposta(letra)) {
+            await this.acertou()
+        } else { 
+            await this.errou()
+        }
+    }
 
     adicionaPerguntaErradaAEstatistica() {
         let s = this.state
@@ -52,38 +42,28 @@ export default class Jogo extends Component {
         this.setState(s)
     }
 
-    acertou(letra) {
+    async acertou() {
         let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
-        let acertou = this.compararResposta(letra)
-
-        // this.adicionaPerguntaAcertadaAEstatistica()
-
-        this.atualizaReferenciaDoModal(acertou)
-        if (!acertou) {
-            return false
-        }
+        this.atualizaReferenciaDoModal(true)
         this.abrirModal()
         setTimeout(() => this.fechaModal(), 3000)
         this.seAcabouPerguntasRedirecionaParaCreditos(this.acabouPerguntas())
-        if (!voltarParaExplicacao) {
-            this.aumentaPontuacao()
-            this.removerPerguntaDaLista()
-            this.gravarDataSave()
-            return acertou
-        }
         this.aumentaPontuacao()
-        this.proximaFase()
         this.removerPerguntaDaLista()
-        this.gravarDataSave()
-        setTimeout(() => this.props.navigation.goBack(null), 3000)
-        return acertou
+        if (!voltarParaExplicacao) {
+            await this.SaveAsyncStorage(this.state.dataSave);
+            return true
+        }
+        this.proximaFase()
+        await this.SaveAsyncStorage(this.state.dataSave);
+        setTimeout(() => this.props.navigation.goBack(this.state.dataSave), 3000)
+        return true
     }
 
-    errou() {
+    async errou() {
+        this.atualizaReferenciaDoModal(false)
         let voltarParaExplicacao = this.state.dataSave.perguntas[0].voltarParaExplicacao
-
         this.adicionaPerguntaErradaAEstatistica()
-
         this.abrirModal()
         setTimeout(() => this.fechaModal(), 3000)
         if (!voltarParaExplicacao) {
@@ -92,8 +72,8 @@ export default class Jogo extends Component {
         }
         this.moverPerguntaParaFinalDaLista()
         this.proximaFase()
-        this.gravarDataSave()
-        setTimeout(() => this.props.navigation.goBack(null), 3000)
+        await this.SaveAsyncStorage(this.state.dataSave);
+        setTimeout(() => this.props.navigation.goBack(this.state.dataSave), 3000)
     }
 
     atualizaReferenciaDoModal(acertou) {
@@ -157,7 +137,7 @@ export default class Jogo extends Component {
 
     seAcabouPerguntasRedirecionaParaCreditos = () => {
         if (this.state.dataSave.perguntas.length - 1 == 0) 
-            this.props.navigation.navigate('Fim')
+            this.props.navigation.navigate('Fim', this.state.dataSave)
     }
 
 
@@ -192,7 +172,7 @@ export default class Jogo extends Component {
                             <View style={{ flex: 1, justifyContent: 'center' }}>
                                 <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}> 
                                     { Perguntas.length - this.state.dataSave.perguntas.length } de { Perguntas.length } perguntas 
-                                </Text> 
+                                </Text>
                             </View>
                             <Text style={styles.textoPergunta}> 
                                 { this.state.dataSave.perguntas[0].id }) 

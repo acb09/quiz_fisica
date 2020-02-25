@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, TouchableHighlight, Image } from 'react-native';
-import { gravarDataSave, obterDataSave, atualizarDataSave } from '../Storage';
+import { GetAsyncStorage, SaveAsyncStorage, ResetOrInitAsyncStorage } from '../Storage';
 import { styles } from '../styles';
-import { Perguntas } from '../Perguntas';
-import { Dialogos } from '../Dialogos';
+import Perguntas from '../Perguntas';
+import Dialogos from '../Dialogos';
 
 export default class Fim extends Component {
 
@@ -13,46 +13,38 @@ export default class Fim extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { dataSave: null }
-        this.obterDataSave = obterDataSave.bind(this)
-        this.atualizarDataSave = atualizarDataSave.bind(this)
-        this.gravarDataSave = gravarDataSave.bind(this)
+        this.state = { dataSave: this.props.navigation.state.params }
+        this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
+        this.GetAsyncStorage = GetAsyncStorage.bind(this)
     }
 
     componentDidMount() {
-        this.obterDataSave()
-        this.atualizarDataSave()
-        this.gravarDataSave()
+        this.SaveAsyncStorage(this.state.dataSave);
         let enviaDadosAteObterSucesso = setInterval(() => {
-            if (this.state.dataSave.relatorioEnviado) 
+            if (this.enviarEstatisticas()) 
                 clearInterval(enviaDadosAteObterSucesso)
-            else 
-                this.enviarEstatisticas()
         },
         5000);
     }
 
-    reset() {
-        if (this.state.dataSave === null) 
-            return false
+    async reset() {
         let s = this.state
         s.dataSave.fase = 0
         s.dataSave.perguntas = Perguntas
         s.dataSave.dialogos = Dialogos
         s.relatorioEnviado = true
         this.setState(s)
-        this.gravarDataSave()
+        await this.SaveAsyncStorage(s.dataSave)
         return true
     }
 
     enviarEstatisticas() {
 
-        if (!this.state.dataSave) return false
-        if (this.state.dataSave.relatorioEnviado) return false
+        if (this.state.dataSave == false) return false
+        if (this.state.dataSave.relatorioEnviado == true) return false
         
         // let url = "http://192.168.0.105/process.php"
         let url = "https://dashjogofisica.000webhostapp.com/process.php"
-
         
         fetch(url, {
             method: 'POST',
@@ -63,23 +55,24 @@ export default class Fim extends Component {
             body: JSON.stringify(this.state.dataSave),
         })
         .then( (response) => {
-            response.text().then((res) => { 
+            response.text().then(async (res) => { 
                 console.warn(res) 
                 let s = this.state
                 s.dataSave.relatorioEnviado = true
                 this.setState(s)
-                this.gravarDataSave()
+                let result = await this.SaveAsyncStorage(s.dataSave)
+                return result;
             })
         })
         .catch(error => {
             console.warn("Falha ao enviar!")
+            return false
         })
-
     }
 
     async finalizar() {
-        this.reset()
-        setTimeout(() => this.props.navigation.navigate('Menu'), 2000)
+        await this.reset()
+        setTimeout(() => this.props.navigation.navigate('Menu', this.state.dataSave), 2000)
     }
 
     render() {
