@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, Modal, Image, ScrollView } from 'react-native';
 import { styles } from '../styles.js';
 import Perguntas from '../Perguntas';
-import { GetAsyncStorage, SaveAsyncStorage , ResetOrInitAsyncStorage } from '../Storage';
+import { GetAsyncStorage, SaveAsyncStorage, ResetOrInitAsyncStorage } from '../Storage';
 
 export default class Jogo extends Component {
 
@@ -30,7 +30,7 @@ export default class Jogo extends Component {
     async processarResposta(letra) {
         if (this.compararResposta(letra)) {
             await this.acertou()
-        } else { 
+        } else {
             await this.errou()
         }
     }
@@ -136,7 +136,7 @@ export default class Jogo extends Component {
 
 
     seAcabouPerguntasRedirecionaParaCreditos = () => {
-        if (this.state.dataSave.perguntas.length - 1 == 0) 
+        if (this.state.dataSave.perguntas.length - 1 == 0)
             this.props.navigation.navigate('Fim', this.state.dataSave)
     }
 
@@ -145,57 +145,57 @@ export default class Jogo extends Component {
         const imagemErrou = '../../images/errou.png'
         const imagemAcertou = '../../images/acertou.png'
         const imagemResposta = (this.state.referenciaSeErrouOuAcertouOModal) ? require(imagemAcertou) : require(imagemErrou)
-        
+
         return (
             <Modal animationType="slide" transparent={false} visible={this.state.modalVisivel}>
-                <View style = { styles.modal } >
-                    <Image source = { imagemResposta } style = {{ width: '100%', height: '100%' }}/> 
-                </View> 
+                <View style={styles.modal} >
+                    <Image source={imagemResposta} style={{ width: '100%', height: '100%' }} />
+                </View>
             </Modal>
         );
     }
 
     render() {
         if (this.state.dataSave === null) {
-            return ( 
-                <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={styles.texto}>Carregando...</Text> 
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={styles.texto}>Carregando...</Text>
                 </View>
             )
         }
-        return ( 
-            <View style={styles.window}> 
-                <Image source={this.state.dataSave.perguntas[0].imagem} style={styles.windowBackgroundImage}/>
+        return (
+            <View style={styles.window}>
+                <Image source={this.state.dataSave.perguntas[0].imagem} style={styles.windowBackgroundImage} />
                 <View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'rgba(0,0,0,.4)' }}>
                     <ScrollView>
-                        <View style={styles.areaPerguntas}> 
-                            <View style={{ flex: 1, justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}> 
-                                    { Perguntas.length - this.state.dataSave.perguntas.length } de { Perguntas.length } perguntas 
-                                </Text>
-                            </View>
-                            <Text style={styles.textoPergunta}> 
-                                { this.state.dataSave.perguntas[0].id }) 
-                                { this.state.dataSave.perguntas[0].pergunta } 
+                        <View style={styles.areaPerguntas}>
+                            <Text style={styles.textoPergunta}>
+                                {this.state.dataSave.perguntas[0].id})
+                                {this.state.dataSave.perguntas[0].pergunta}
                             </Text>
                             {this.state.dataSave.perguntas[0].alternativas.map((alternativa, index) => (
                                 <TouchableHighlight key={index} onPress={() => this.processarResposta(letras[index])} style={styles.alternatives}>
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                                         <View style={styles.circle}>
-                                            <Text style={ styles.fontComic, { fontSize: 20, textAlign: 'center', lineHeight: 46 }}>
+                                            <Text style={styles.fontComic, { fontSize: 20, textAlign: 'center', lineHeight: 46 }}>
                                                 {letras[index]}
-                                            </Text> 
-                                        </View> 
-                                        <Text style={styles.fontComic}> 
-                                            { alternativa } 
-                                        </Text> 
-                                    </View> 
+                                            </Text>
+                                        </View>
+                                        <Text style={styles.fontComic}>
+                                            {alternativa}
+                                        </Text>
+                                    </View>
                                 </TouchableHighlight>
                             ))}
-                        </View> 
-                    </ScrollView> 
+                            <View style={{ flex: 1, justifyContent: 'flex-end', alignSelf: 'center'}}>
+                                <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}>
+                                    {Perguntas.length - this.state.dataSave.perguntas.length} de {Perguntas.length} perguntas
+                                </Text>
+                            </View>
+                        </View>
+                    </ScrollView>
                 </View>
-        {this.renderModal()} 
+                {this.renderModal()}
             </View>
         )
     }
