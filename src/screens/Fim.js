@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { View, TouchableHighlight, Image } from 'react-native';
+import { View, ActivityIndicator, TouchableHighlight, Image, BackHandler, Text } from 'react-native';
 import { GetAsyncStorage, SaveAsyncStorage, ResetOrInitAsyncStorage } from '../Storage';
 import { styles } from '../styles';
 import Perguntas from '../Perguntas';
-import Dialogos from '../Dialogos';
 
 export default class Fim extends Component {
 
@@ -12,78 +11,86 @@ export default class Fim extends Component {
     };
 
     constructor(props) {
-        super(props)
-        this.state = { dataSave: this.props.navigation.state.params }
-        this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
-        this.GetAsyncStorage = GetAsyncStorage.bind(this)
+        super(props);
+        this.state = { dataSave: this.props.navigation.state.params, lock: true };
+        this.SaveAsyncStorage = SaveAsyncStorage.bind(this);
+        this.GetAsyncStorage = GetAsyncStorage.bind(this);
+        this.ResetOrInitAsyncStorage = ResetOrInitAsyncStorage.bind(this);
     }
 
     componentDidMount() {
         this.SaveAsyncStorage(this.state.dataSave);
         let enviaDadosAteObterSucesso = setInterval(() => {
-            if (this.enviarEstatisticas()) 
+            if (this.enviarEstatisticas())
                 clearInterval(enviaDadosAteObterSucesso)
-        },
-        5000);
-    }
-
-    async reset() {
-        let s = this.state
-        s.dataSave.fase = 0
-        s.dataSave.perguntas = Perguntas
-        s.dataSave.dialogos = Dialogos
-        s.relatorioEnviado = true
-        this.setState(s)
-        await this.SaveAsyncStorage(s.dataSave)
-        return true
+        }, 5000)
     }
 
     enviarEstatisticas() {
 
         if (this.state.dataSave == false) return false
         if (this.state.dataSave.relatorioEnviado == true) return false
-        
-        // let url = "http://192.168.0.105/process.php"
-        let url = "https://dashjogofisica.000webhostapp.com/process.php"
-        
+
+        // let url = "http://192.168.0.150/process.php"
+        const url = "https://dashjogofisica.000webhostapp.com/process.php"
+        const { nome, estatisticas: { questoesqueerrou }, system: { info: { IMEI } }, perguntas } = this.state.dataSave;
+        const relatorio = {
+            nome: nome,
+            questoesqueerrou: questoesqueerrou,
+            IMEI: IMEI,
+            maxPerguntas: Perguntas.length,
+        };
+
         fetch(url, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(this.state.dataSave),
+            body: JSON.stringify(relatorio),
         })
-        .then( (response) => {
-            response.text().then(async (res) => { 
-                console.warn(res) 
-                let s = this.state
-                s.dataSave.relatorioEnviado = true
-                this.setState(s)
-                let result = await this.SaveAsyncStorage(s.dataSave)
-                return result;
+            .then((response) => {
+                response.text().then(async (text) => {
+                    console.warn(text);
+                    let s = this.state
+                    s.lock = false
+                    s.dataSave.score = Perguntas.length;
+                    this.setState(s)
+                    let status = await this.SaveAsyncStorage(s.dataSave) ? true : false
+                    return status;
+                })
             })
-        })
-        .catch(error => {
-            console.warn("Falha ao enviar!")
-            return false
-        })
+            .catch(error => {
+                console.warn("Falha ao enviar!");
+                BackHandler.exitApp();
+            })
     }
 
     async finalizar() {
-        await this.reset()
-        setTimeout(() => this.props.navigation.navigate('Menu', this.state.dataSave), 2000)
+        await this.ResetOrInitAsyncStorage(); // Em produção, enviar TRUE como verdadeiro
+        BackHandler.exitApp();
     }
 
     render() {
-        return ( 
-            <View style = {{ flex: 1 }} >
-                <Image source = { require('../../images/fases/fim.png') } style = { styles.backgroundImage }/> 
-                <View style = { styles.fim } >
-                    <TouchableHighlight onPress = {() => this.finalizar()} style = {{ position: 'absolute', top: '58%' }} >
-                        <Image style = { styles.button } source = { require('../../images/button_end.png') }/> 
-                    </TouchableHighlight> 
-                </View> 
+        console.warn(this.state.dataSave.relatorioEnviado);
+        if (this.state.lock)
+            return (
+                <View style={{ flex: 1 }} >
+                    <View style={styles.fim} >
+                        <Text style={{ fontSize: 20 }}>Coletando os dados!</Text>
+                        <Text style={{ fontSize: 20 }}>Aguarde um momento!</Text>
+                        <ActivityIndicator size="large" color="#0000ff" style={{ width: 20 }} />
+                    </View>
+                </View>
+            );
+        return (
+            <View style={{ flex: 1 }} >
+                <Image source={require('../../images/fases/fim.png')} style={styles.backgroundImage} />
+                <View style={styles.fim} >
+                    <TouchableHighlight onPress={() => this.finalizar()} style={{ position: 'absolute', top: '58%' }} >
+                        <Image style={styles.button} source={require('../../images/button_end.png')} />
+                    </TouchableHighlight>
+                </View>
             </View>
         );
     }

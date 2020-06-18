@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, BackHandler, Image, TextInput, Button, ScrollView } from 'react-native';
-import { GetAsyncStorage, SaveAsyncStorage , ResetOrInitAsyncStorage } from '../Storage';
+import { GetAsyncStorage, SaveAsyncStorage, ResetOrInitAsyncStorage } from '../Storage';
+import validarNome from '../functions/validadorNomes';
+import requestReadPhoneStatePermission from '../functions/requestReadPhoneStatePermission';
+import getIMEI from '../functions/getIMEI';
+
 import { styles } from '../styles';
 
 export default class Menu extends Component {
 
 	constructor(props) {
-		super(props)
-		this.state = { dataSave: null, nomeForm: null }
-		this.GetAsyncStorage = GetAsyncStorage.bind(this)
-		this.SaveAsyncStorage = SaveAsyncStorage.bind(this)
-		this.buttonRegister = this.buttonRegister.bind(this)
+		super(props);
+		this.state = { dataSave: null, nomeForm: null };
+		this.GetAsyncStorage = GetAsyncStorage.bind(this);
+		this.SaveAsyncStorage = SaveAsyncStorage.bind(this);
+		this.buttonRegister = this.buttonRegister.bind(this);
+		this.fechaOAplicativoSeNaoPermitirAcessoAoTelefone = this.fechaOAplicativoSeNaoPermitirAcessoAoTelefone.bind(this);
 	}
 
 	static navigationOptions = {
@@ -20,21 +25,37 @@ export default class Menu extends Component {
 	async componentWillMount() {
 		let s = this.state;
 		s.dataSave = this.props.navigation.state.params || await this.GetAsyncStorage();
-		this.setState(s);		
+		this.setState(s);
+	}
+
+	async componentDidMount() {
+		const granted = await requestReadPhoneStatePermission();
+
+		if (granted) {
+			let s = this.state;
+			s.dataSave.system.info.IMEI = await getIMEI();
+			this.setState(s);
+		} else {
+			await this.fechaOAplicativoSeNaoPermitirAcessoAoTelefone(granted);
+		}
 	}
 
 	async buttonRegister() {
-		let s = this.state
-		if (this.state.nomeForm == "") return alert("Você precisa digitar um nome!");
-		if (this.state.nomeForm.split(" ").length < 2 || this.state.nomeForm[this.state.nomeForm.length - 1] == " ") 
-			return alert("Você digitou apenas o primeiro nome.")
+		const s = this.state;
+		const nomeValido = validarNome(this.state.nomeForm);
+
+		if (nomeValido == 1)
+			return alert("Você precisa preencher o nome!");
+		if (nomeValido == 2)
+			return alert("É necessário o nome completo!");
+
 		s.dataSave.nome = this.state.nomeForm;
 		this.setState(s);
 		await SaveAsyncStorage(s.dataSave);
 	}
 
 	async reset() {
-		alert("Todas as configurações foram reiniciadas")
+		alert("Redefinindo app!")
 		ResetOrInitAsyncStorage();
 		let s = this.state;
 		s.nomeForm = null;
@@ -42,8 +63,9 @@ export default class Menu extends Component {
 		this.setState(s);
 	}
 
+	fechaOAplicativoSeNaoPermitirAcessoAoTelefone = (granted) => (!granted) ? BackHandler.exitApp() : false;
+
 	render() {
-		
 		if (this.state.dataSave == null) {
 			return (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -69,11 +91,10 @@ export default class Menu extends Component {
 						onChangeText={(nomeForm) => this.setState({ nomeForm })}
 						value={this.state.nomeForm}
 					></TextInput>
-					<Button title="Registrar" onPress={this.buttonRegister}></Button>
+					<Button title="Pronto" onPress={this.buttonRegister}></Button>
 				</View>
 			)
 		}
-
 		return (
 			<View style={[styles.window]}>
 				<Image source={require('../../images/galaxia.png')} style={styles.backgroundImage} />

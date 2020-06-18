@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableHighlight, Modal, Image } from 'react-native';
 import { styles } from '../styles.js';
 import Perguntas from '../Perguntas';
-import { GetAsyncStorage, SaveAsyncStorage, ResetOrInitAsyncStorage } from '../Storage';
+import { GetAsyncStorage, SaveAsyncStorage } from '../Storage';
 
 export default class Jogo extends Component {
 
@@ -23,10 +23,6 @@ export default class Jogo extends Component {
         header: null,
     };
 
-    // processarResposta(letra) {
-    //     this.acertou(letra) || this.errou()
-    // }
-
     async processarResposta(letra) {
         if (this.compararResposta(letra)) {
             await this.acertou()
@@ -36,10 +32,10 @@ export default class Jogo extends Component {
     }
 
     adicionaPerguntaErradaAEstatistica() {
-        let s = this.state
+        let s = this.state;
         s.dataSave.estatisticas.nerros++;
-        s.dataSave.estatisticas.questoesqueerrou.push(this.state.dataSave.perguntas[0])
-        this.setState(s)
+        s.dataSave.estatisticas.questoesqueerrou.push(this.state.dataSave.perguntas[0].id);
+        this.setState(s);
     }
 
     async acertou() {
@@ -54,10 +50,10 @@ export default class Jogo extends Component {
             await this.SaveAsyncStorage(this.state.dataSave);
             return true
         }
-        this.proximaFase()
+        this.proximaFase();
         await this.SaveAsyncStorage(this.state.dataSave);
-        setTimeout(() => this.props.navigation.goBack(this.state.dataSave), 3000)
-        return true
+        setTimeout(() => this.props.navigation.navigate('Explicacao', this.state.dataSave), 3000);
+        return true;
     }
 
     async errou() {
@@ -73,7 +69,7 @@ export default class Jogo extends Component {
         this.moverPerguntaParaFinalDaLista()
         this.proximaFase()
         await this.SaveAsyncStorage(this.state.dataSave);
-        setTimeout(() => this.props.navigation.goBack(this.state.dataSave), 3000)
+        setTimeout(() => this.props.navigation.navigate('Explicacao', this.state.dataSave), 3000);
     }
 
     atualizaReferenciaDoModal(acertou) {
@@ -155,6 +151,7 @@ export default class Jogo extends Component {
         );
     }
 
+
     render() {
         if (this.state.dataSave === null) {
             return (
@@ -163,16 +160,20 @@ export default class Jogo extends Component {
                 </View>
             )
         }
+
         return (
             <View style={styles.window}>
                 <Image source={this.state.dataSave.perguntas[0].imagem} style={styles.windowBackgroundImage} />
                 <View style={{ flex: 1, flexDirection: 'row', backgroundColor: 'rgba(0,0,0,.4)' }}>
-                    <ScrollView>
-                        <View style={styles.areaPerguntas}>
-                            <Text style={styles.textoPergunta}>
-                                {this.state.dataSave.perguntas[0].id})
-                                {this.state.dataSave.perguntas[0].pergunta}
-                            </Text>
+
+                    <View style={styles.areaPerguntas}>
+
+                        <Text style={styles.textoPergunta}>
+                            {this.state.dataSave.perguntas[0].id})
+                            {this.state.dataSave.perguntas[0].pergunta}
+                        </Text>
+
+                        <View style={{ flex: 1 }}>
                             {this.state.dataSave.perguntas[0].alternativas.map((alternativa, index) => (
                                 <TouchableHighlight key={index} onPress={() => this.processarResposta(letras[index])} style={styles.alternatives}>
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -187,13 +188,16 @@ export default class Jogo extends Component {
                                     </View>
                                 </TouchableHighlight>
                             ))}
-                            <View style={{ flex: 1, justifyContent: 'flex-end', alignSelf: 'center'}}>
-                                <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}>
-                                    {Perguntas.length - this.state.dataSave.perguntas.length} de {Perguntas.length} perguntas
-                                </Text>
-                            </View>
                         </View>
-                    </ScrollView>
+
+                        <View style={{ flex: 1, justifyContent: 'flex-end', alignSelf: 'center' }}>
+                            <Text style={{ fontSize: 21, fontWeight: 'bold', textAlign: 'center', lineHeight: 50, backgroundColor: 'white', borderRadius: 50, height: 50, width: '100%', paddingHorizontal: 15, marginVertical: 10 }}>
+                                {parseInt(Perguntas.length) - parseInt(this.state.dataSave.perguntas.length)} de {Perguntas.length} perguntas
+                            </Text>
+                        </View>
+
+                    </View>
+
                 </View>
                 {this.renderModal()}
             </View>
