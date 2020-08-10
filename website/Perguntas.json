@@ -1,0 +1,271 @@
+[
+
+    // Fase 1
+    {
+        "id": 1,
+        "pergunta": "Qual a classificação da força Física responsável por erguer a caixa usando a empilhadeira?",
+        "letraRespostaCorreta": "A",
+        "alternativas": ["Força de contato", "Força de campo"],
+    },
+
+    {
+        "id": 2,
+        "pergunta": "Qual a classificação da força Física responsável por fazer o carro ser atraído pelo ímã?",
+        "letraRespostaCorreta": "B",
+        "alternativas": ["Força de contato", "Força de campo"],
+    },
+
+    {
+        "id": 3,
+        "pergunta": "Qual a classificação da força Física responsável por puxar os vagões?",
+        "letraRespostaCorreta": "B",
+        "alternativas": ["Força de campo", "Força de contato"],
+    },
+
+    {
+        "id": 4,
+        "pergunta": "Qual a classificação da força Física responsável por atrair o paraquedista para  o chão?",
+        "letraRespostaCorreta": "B",
+        "alternativas": ["Força de contato", "Força de campo"],
+    },
+
+
+
+
+
+    
+    // Fase 2
+    {
+        "id": 5,
+        "pergunta": "O que é a força gravitacional, proposta por Isaac Newton?",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Força de atração que pode ser percebida, por ser muito grande.",
+            "Força de atração que existe entre todos os corpos com massa no universo.",
+        ],
+    },
+
+    {
+        "id": 6,
+        "pergunta": "A Força Gravitacional depende:",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Da massa dos corpos e da idade deles.",
+            "Da massa dos corpos e da distância entre eles.",
+        ],
+    },
+
+
+
+
+
+
+
+
+
+    // Fase 3
+    {
+        "id": 7,
+        "pergunta": "Como age a Força Gravitacional em nosso sistema solar?",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Faz os planetas se unirem, proporcionando mais força, para o sistema.",
+            "Faz com que os planetas se mantenham em órbita, girando em torno do Sol.",
+        ],
+    },
+
+
+
+
+
+
+
+    // Fase 4,
+    {
+        "id": 8,
+        "pergunta": "Em relação a intensidade da Força de atração Gravitacional, entre dois corpos:",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "O maior corpo atrai com maior intensidade.",
+            "Os corpos se atraem com igual intensidade.",
+        ],
+    },
+    {
+        "id": 9,
+        "pergunta": "O peso de uma pessoa é definido: ",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Pela balança.",
+            "Pela gravidade do local.",
+        ],
+    },
+
+
+
+
+
+
+
+
+    // Fase 5
+    {
+        "id": 10,
+        "pergunta": "Os astronautas flutuam devido: ",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "À queda livre.",
+            "Ao seu peso.",
+        ],
+    },
+
+    {
+        "id": 11,
+        "pergunta": "O que explica as órbitas e as trajetórias elípticas dos planetas?",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "A massa dos planetas.",
+            "A Força gravitacional do sistema.",
+        ],
+    },
+
+
+
+
+
+
+
+
+    // Fase 6	
+    {
+        "id": 12,
+        "pergunta": "A que se atribui o Fenômeno das marés?",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Atração da Lua e das estrelas, sobre as águas do mar.",
+            "Atração do Sol e da Lua sobre as águas do mar.",
+        ],
+    },
+    {
+        "id": 13,
+        "pergunta": "Por que o campo gravitacional entre o Sol e a Terra não são iguais em todos os pontos?",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Pela distância dos corpos celestes em determinadas épocas do ano.",
+            "Pela distância dos corpos celestes em determinados dias do mês.",
+        ],
+    },
+
+
+
+
+
+
+
+    
+    // FASE 7
+
+    {
+        "id": 14,
+        "pergunta": "Em 1905 Albert Einstein propôs a Teoria da Relatividade Especial, onde explica que:",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Referenciais que se movem com velocidades próximas à velocidade da luz, experimentam a passagem do tempo, de forma mais lenta.",
+            "Referenciais que se movem com velocidades bem pequenas, experimentam a passagem do tempo, de forma mais lenta.",
+        ],
+    },
+    {
+        "id": 15,
+        "pergunta": "O que aconteceria se fôssemos capazes de viajar numa nave tão rápida quanto à luz?",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Iríamos parecer aumentados e mais jovens, que pessoas na Terra.",
+            "Iríamos parecer diminuídos e mais jovens, que pessoas na Terra.",
+        ],
+    },
+
+
+
+
+
+
+
+
+
+    // Fase 8
+    {
+        "id": 16,
+        "pergunta": "De acordo com a Teoria da Relatividade Geral:",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Corpos massivos deformam o espaço-tempo, dando origem à gravidade.",
+            "Corpos leves podem deformar o espaço-tempo, gerando assim a gravidade.",
+        ],
+    },
+    {
+        "id": 17,
+        "pergunta": "Albert Einstein, propôs, que o próprio espaço e o próprio tempo são afetados pela presença de matéria e de energia.",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Falso",
+            "Verdadeiro",
+        ],
+    },
+
+
+
+
+
+
+
+
+
+
+    
+    // Fase 9
+    {
+        "id": 18,
+        "pergunta": "Sobre o eclipse total de Sobral em 1919\, responda:",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Foi a comprovação das teorias revolucionárias de Albert Einstein",
+            "O modelo de universo de Newton era na realidade, o correto.",
+        ],
+    },
+    {
+        "id": 19,
+        "pergunta": "Para ver o fenômeno da curvatura da luz:",
+        "letraRespostaCorreta": "B",
+        "alternativas": [
+            "Os instrumentos montados, em outras partes do mundo conseguiram medir e provar a curvatura da luz.",
+            "Somente em Sobral\, o céu estava limpo permitindo assim, que os instrumentos medissem e comprovassem a curvatura da luz.",
+        ],
+    },
+
+
+
+
+
+    
+
+
+    // Fase 10
+    {
+        "id": 20,
+        "pergunta": "Segundo Newton\, corpos com massa são atraídos, em proporção inversa ao quadrado da distância dando origem à gravidade.",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Verdadeiro",
+            "Falso",
+        ],
+    },
+    {
+        "id": 21,
+        "pergunta": "Segundo Einstein\, corpos massivos, são capazes de deformar o espaço-tempo prendendo outros corpos nesta deformação\, dando origem assim à gravidade.",
+        "letraRespostaCorreta": "A",
+        "alternativas": [
+            "Verdadeiro",
+            "Falso",
+        ],
+    },
+
+]
