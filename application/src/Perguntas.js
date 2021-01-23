@@ -46,10 +46,10 @@ export default Perguntas = [
     {
         id: 5,
         imagem: require("../images/fases/fase1.png"),
-        pergunta: "O que é a força gravitacional, proposta por Isaac Newton?",
+        pergunta: "Qual a definição da força gravitacional proposta por Isaac Newton?",
         letraRespostaCorreta: "B",
         alternativas: [
-            "Força de atração que pode ser percebida, por ser muito grande.",
+            "Força de atração que existe entre todos os corpos no universo devido ao peso deles.",
             "Força de atração que existe entre todos os corpos com massa no universo.",
         ],
         voltarParaExplicacao: false,
@@ -61,7 +61,7 @@ export default Perguntas = [
         pergunta: "A Força Gravitacional depende:",
         letraRespostaCorreta: "B",
         alternativas: [
-            "Da massa dos corpos e da idade deles.",
+            "Da massa dos corpos e do tamanho deles.",
             "Da massa dos corpos e da distância entre eles.",
         ],
         voltarParaExplicacao: true,
@@ -109,11 +109,11 @@ export default Perguntas = [
     {
         id: 9,
         imagem: require("../images/fases/fase3.png"),
-        pergunta: "O peso de uma pessoa é definido: ",
-        letraRespostaCorreta: "B",
+        pergunta: "O peso é determinado: ",
+        letraRespostaCorreta: "A",
         alternativas: [
-            "Pela balança.",
-            "Pela gravidade do local.",
+            "Pela massa e a altitude que você se encontra medido em kgf.",
+            "Pela gravidade do local medido em kg",
         ],
         voltarParaExplicacao: true,
     },
@@ -161,11 +161,11 @@ export default Perguntas = [
     {
         id: 12,
         imagem: require("../images/fases/fase10.png"),
-        pergunta: "A que se atribui o Fenômeno das marés?",
-        letraRespostaCorreta: "B",
+        pergunta: "Quando acontece o fenômeno das marés altas?",
+        letraRespostaCorreta: "A",
         alternativas: [
-            "Atração da Lua e das estrelas, sobre as águas do mar.",
-            "Atração do Sol e da Lua sobre as águas do mar.",
+            "Quando há um quase alinhamento da Lua, do Sol e da Terra, nas Luas novas ou cheias.",
+            "Quando há um quase alinhamento da Lua, do Sol e da Terra, nas Luas quarto crescente ou quarto minguante.",
         ],
         voltarParaExplicacao: false,
     },
@@ -176,7 +176,7 @@ export default Perguntas = [
         letraRespostaCorreta: "A",
         alternativas: [
             "Pela distância dos corpos celestes em determinadas épocas do ano.",
-            "Pela distância dos corpos celestes em determinados dias do mês.",
+            "Pelo tamanho dos corpos celestes em determinadas épocas do ano.",
         ],
         voltarParaExplicacao: true,
     },
@@ -193,7 +193,7 @@ export default Perguntas = [
     {
         id: 14,
         imagem: require("../images/fases/fase11.png"),
-        pergunta: "Em 1905 Albert Einstein propôs a Teoria da Relatividade Especial, onde explica que:",
+        pergunta: "Albert Einstein propôs a Teoria da Relatividade Especial, onde explica que:",
         letraRespostaCorreta: "A",
         alternativas: [
             "Referenciais que se movem com velocidades próximas à velocidade da luz, experimentam a passagem do tempo, de forma mais lenta.",
@@ -204,11 +204,11 @@ export default Perguntas = [
     {
         id: 15,
         imagem: require("../images/fases/fase7.png"),
-        pergunta: "O que aconteceria se fôssemos capazes de viajar numa nave tão rápida quanto à luz?",
+        pergunta: "Como pareceríamos a alguém da Terra, se estivéssemos viajando numa nave tão rápida quanto à luz?",
         letraRespostaCorreta: "B",
         alternativas: [
-            "Iríamos parecer aumentados e mais jovens, que pessoas na Terra.",
-            "Iríamos parecer diminuídos e mais jovens, que pessoas na Terra.",
+            "Iríamos parecer aumentados e mais jovens.",
+            "Iríamos parecer diminuídos e mais jovens.",
         ],
         voltarParaExplicacao: true,
     },
@@ -229,18 +229,18 @@ export default Perguntas = [
         letraRespostaCorreta: "A",
         alternativas: [
             "Corpos massivos deformam o espaço-tempo, dando origem à gravidade.",
-            "Corpos leves podem deformar o espaço-tempo, gerando assim a gravidade.",
+            "Corpos leves não podem deformar o espaço-tempo.",
         ],
         voltarParaExplicacao: false,
     },
     {
         id: 17,
         imagem: require("../images/fases/fase12.png"),
-        pergunta: "Albert Einstein, propôs, que o próprio espaço e o próprio tempo são afetados pela presença de matéria e de energia.",
-        letraRespostaCorreta: "B",
+        pergunta: "Albert Einstein propôs que o próprio espaço e o próprio tempo são afetados pela presença de matéria e de energia.",
+        letraRespostaCorreta: "A",
         alternativas: [
-            "Falso",
             "Verdadeiro",
+            "Falso"
         ],
         voltarParaExplicacao: true,
     },
@@ -262,19 +262,19 @@ export default Perguntas = [
         pergunta: "Sobre o eclipse total de Sobral em 1919, responda:",
         letraRespostaCorreta: "A",
         alternativas: [
-            "Foi a comprovação das teorias revolucionárias de Albert Einstein",
-            "O modelo de universo de Newton era na realidade, o correto.",
+            "Foi o local onde foram experimentadas as medidas da teoria de Albert Einstein sobre o desvio da luz, com a finalidade de comprová-las.",
+            "Após a experiência de medição baseada nas teorias de Einstein sua teoria de desvio da luz ficou totalmente comprovada.",
         ],
         voltarParaExplicacao: false,
     },
     {
         id: 19,
         imagem: require("../images/fases/fase13.png"),
-        pergunta: "Para ver o fenômeno da curvatura da luz:",
+        pergunta: "Como a equipe de Einstein pretendia verificar a curvatura da luz?",
         letraRespostaCorreta: "B",
         alternativas: [
-            "Os instrumentos montados, em outras partes do mundo conseguiram medir e provar a curvatura da luz.",
-            "Somente em Sobral, o céu estava limpo permitindo assim, que os instrumentos medissem e comprovassem a curvatura da luz.",
+            "Esta curvatura poderia ser verificada com um eclipse lunar.",
+            "Esta curvatura, só poderia ser verificada através de um eclipse total do Sol.",
         ],
         voltarParaExplicacao: true,
     },
@@ -303,7 +303,7 @@ export default Perguntas = [
     {
         id: 21,
         imagem: require("../images/fases/fase15.png"),
-        pergunta: "Segundo Einstein, corpos massivos, são capazes de deformar o espaço-tempo prendendo outros corpos nesta deformação\, dando origem assim à gravidade.",
+        pergunta: "Segundo Einstein, corpos massivos são capazes de deformar o espaço-tempo prendendo outros corpos nesta deformação\, dando origem assim à gravidade.",
         letraRespostaCorreta: "A",
         alternativas: [
             "Verdadeiro",
